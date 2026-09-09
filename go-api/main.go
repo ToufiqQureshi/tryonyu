@@ -47,6 +47,8 @@ func main() {
 		handlers.RequireBrandAPIKey(http.HandlerFunc(deps.PhotoStatus)))
 	mux.Handle("POST /api/v1/tryon",
 		handlers.RequireBrandAPIKey(http.HandlerFunc(deps.TryOn)))
+	mux.Handle("GET /api/v1/tryon/{jobId}",
+		handlers.RequireBrandAPIKey(http.HandlerFunc(deps.TryOnStatus)))
 	mux.Handle("POST /api/v1/recommend",
 		handlers.RequireBrandAPIKey(http.HandlerFunc(deps.Recommend)))
 

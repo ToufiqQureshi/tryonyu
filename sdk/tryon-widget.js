@@ -72,8 +72,33 @@
     });
   }
 
+  // Clothing generation is async (15-60s, see ROADMAP.md Phase 2): the
+  // API returns a job_id instead of a result immediately, so we poll.
+  // Eyewear stays synchronous (result_image_url comes back right away).
+  async function pollTryOnJob(jobId, { intervalMs = 2000, timeoutMs = 90000 } = {}) {
+    const deadline = Date.now() + timeoutMs;
+    while (Date.now() < deadline) {
+      const job = await apiFetch(`/tryon/${jobId}`);
+      if (job.status === "done") return job;
+      if (job.status === "failed") throw new Error(job.error || "try-on generation failed");
+      await new Promise((resolve) => setTimeout(resolve, intervalMs));
+    }
+    throw new Error("try-on generation timed out");
+  }
+
   function render(mount, html) {
     mount.innerHTML = html;
+  }
+
+  // Shared by both the "returning customer" and "first-time" click
+  // handlers below — kicks off try-on and renders the result, whether
+  // the API responded synchronously (eyewear) or via a job to poll
+  // (clothing).
+  async function handleTryOn(btn, mount, customerId) {
+    btn.textContent = "Generating…";
+    const result = await runTryOn(customerId);
+    const final = result.job_id ? await pollTryOnJob(result.job_id) : result;
+    render(mount, `<img src="${final.result_image_url || final.result_url}" alt="Try-on result" />`);
   }
 
   async function init() {
@@ -90,11 +115,7 @@
     if (status.has_photo) {
       // Returning customer on this brand's site: zero-friction path.
       btn.textContent = "Try it on";
-      btn.onclick = async () => {
-        btn.textContent = "Generating…";
-        const result = await runTryOn(customerId);
-        render(mount, `<img src="${result.result_image_url}" alt="Try-on result" />`);
-      };
+      btn.onclick = () => handleTryOn(btn, mount, customerId);
     } else {
       // First-ever try-on for this customer on this brand: the ONE
       // moment we ask for a photo. Never repeated after this.
@@ -110,11 +131,7 @@
           btn.textContent = "Setting up (one-time)…";
           await uploadPhoto(customerId, file);
           btn.textContent = "Try it on";
-          btn.onclick = async () => {
-            btn.textContent = "Generating…";
-            const result = await runTryOn(customerId);
-            render(mount, `<img src="${result.result_image_url}" alt="Try-on result" />`);
-          };
+          btn.onclick = () => handleTryOn(btn, mount, customerId);
         };
         input.click();
       };
