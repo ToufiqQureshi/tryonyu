@@ -165,6 +165,10 @@ target SQL/logic written in code comments.
 
 ## Read next
 
-1. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
-2. `ROADMAP.md` — what's left to build, in the order to build it.
-3. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
+1. `PROGRESS.md` — what's actually been done so far, and why, in short
+   dated entries. Read this before re-deriving anything from git log —
+   it exists specifically so a fresh session doesn't burn tokens
+   rediscovering context that's already known.
+2. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
+3. `ROADMAP.md` — what's left to build, in the order to build it.
+4. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
