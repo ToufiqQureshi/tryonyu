@@ -169,6 +169,18 @@ target SQL/logic written in code comments.
    dated entries. Read this before re-deriving anything from git log —
    it exists specifically so a fresh session doesn't burn tokens
    rediscovering context that's already known.
-2. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
-3. `ROADMAP.md` — what's left to build, in the order to build it.
-4. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
+2. `TRANSCRIPT.md` — the full, numbered, append-only conversation log
+   (every real exchange: questions, reasoning, decisions, what got
+   built). It grows forever, so **read ONLY the last 3 numbered entries
+   by default** — that's enough to pick up where things left off. Only
+   read further back if you're explicitly asked to dig into older
+   history. **Whenever you (any AI agent, not just Claude Code) finish a
+   real exchange with the founder — a decision made, a question
+   answered, work done — append ONE new short numbered entry to
+   `TRANSCRIPT.md`.** Keep entries a few lines, plain and simple, never
+   rewrite old ones. This is what keeps every future session (and any
+   other AI agent working on this repo) accurately in sync without
+   re-reading the whole file.
+3. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
+4. `ROADMAP.md` — what's left to build, in the order to build it.
+5. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
