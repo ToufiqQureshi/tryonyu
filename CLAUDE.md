@@ -74,27 +74,48 @@ first and it materially changed direction:
    **The pitch to brands should be "reduce returns," not "cool AI
    feature."**
 
-### The actual strategy (in priority order)
+### The actual strategy (in priority order) — REVISED, see below
 
-1. **Ship eyewear first** — technically simple (CPU-only landmark
-   overlay, no GPU, no diffusion model needed), fast to build, gives
-   real usage data and a working end-to-end pipeline (SDK → API →
-   CV service → storage) to sell to a first few brands.
-2. **Design the whole system so eyewear and clothing share the same API
-   contract** — `category` field on `/tryon` routes to different
-   backends (`landmark_overlay` for eyewear now, a GPU diffusion queue
-   for clothing later) without brands' integration code ever changing.
-   See `docs/API_CONTRACT.md`.
-3. **The "photo once, reuse everywhere" SDK UX is the core moat**, more
-   than the CV model itself — this is what actually differentiates from
-   TryVastra and other standalone try-on tools.
-4. **Move into clothing try-on (phase 2) only once eyewear has real
-   brand usage** — clothing needs GPU spend, so it should be justified
-   by revenue/volume, not built speculatively first.
+**This was changed from the original "eyewear first" plan.** Original
+reasoning (ship the CPU-only, GPU-free thing first, defer GPU spend
+until revenue justifies it) is preserved in git history and still
+correct *if you have no GPU budget*. It no longer applies: the founder
+has a Google Cloud free-trial credit ($300, includes GPU quota) and an
+AWS free-tier year, and has made a deliberate, informed call to go
+straight at clothing — the harder, uncrowded, actually-differentiated
+problem — instead of using the credit runway on the easy/commoditized
+eyewear wedge. Do not revert to eyewear-first without the founder
+explicitly saying so again.
+
+1. **Clothing try-on is now the MVP, not phase 4.** Build the
+   diffusion-based (IDM-VTON or CatVTON) customer-facing try-on flow
+   first. See `ROADMAP.md` Phase 2 (renumbered) for the concrete build
+   order — pose/segmentation → diffusion generation → async job
+   contract → embed on a real PDP.
+2. **GPU**: Google Cloud free-trial credit (T4 instance) is the
+   sandbox to build and validate on. AWS's free tier is CPU-only (no
+   GPU on free tier) — use it for the Go API / Postgres / Redis /
+   MinIO-equivalent pieces, not for the CV/generation service. Budget
+   for paid GPU time once the trial credit runs out; per the market
+   research, expect ~₹0.5-2/generated image at real-time scale — this
+   is a known, accepted cost, not a blocker, on the bet that a working
+   product attracts funding.
+3. **Design the API so eyewear can be added later without a rewrite**
+   — `category` field on `/tryon` still routes to different backends
+   (`landmark_overlay` for eyewear, diffusion queue for clothing). The
+   contract shape from `docs/API_CONTRACT.md` is unchanged; only the
+   build order flipped. Eyewear becomes a cheap add-on after clothing
+   works, not the other way around.
+4. **The "photo once, reuse everywhere" SDK UX is still the core
+   moat**, more than the CV model itself — this is what actually
+   differentiates from TryVastra and other standalone try-on tools,
+   and it matters just as much for clothing as it did for eyewear.
 5. **Positioning for India**: INR pricing, WhatsApp-first onboarding/
    support, ethnic wear as an underserved niche (most global try-on
-   tools are built for Western clothing), and "cut your return rate" as
-   the sales pitch to brand founders — not "we have AI."
+   tools and pretrained diffusion checkpoints are tuned for Western
+   fitted clothing — kurtas, sarees, lehengas will need real testing
+   and likely extra fine-tuning/pre-post-processing), and "cut your
+   return rate" as the sales pitch to brand founders — not "we have AI."
 
 ---
 
@@ -144,6 +165,22 @@ target SQL/logic written in code comments.
 
 ## Read next
 
-1. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
-2. `ROADMAP.md` — what's left to build, in the order to build it.
-3. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
+1. `PROGRESS.md` — what's actually been done so far, and why, in short
+   dated entries. Read this before re-deriving anything from git log —
+   it exists specifically so a fresh session doesn't burn tokens
+   rediscovering context that's already known.
+2. `TRANSCRIPT.md` — the full, numbered, append-only conversation log
+   (every real exchange: questions, reasoning, decisions, what got
+   built). It grows forever, so **read ONLY the last 3 numbered entries
+   by default** — that's enough to pick up where things left off. Only
+   read further back if you're explicitly asked to dig into older
+   history. **Whenever you (any AI agent, not just Claude Code) finish a
+   real exchange with the founder — a decision made, a question
+   answered, work done — append ONE new short numbered entry to
+   `TRANSCRIPT.md`.** Keep entries a few lines, plain and simple, never
+   rewrite old ones. This is what keeps every future session (and any
+   other AI agent working on this repo) accurately in sync without
+   re-reading the whole file.
+3. `PROJECT_MAP.md` — every file, what it does, why it's shaped that way.
+4. `ROADMAP.md` — what's left to build, in the order to build it.
+5. `docs/API_CONTRACT.md` — the API shape and the reasoning behind it.
