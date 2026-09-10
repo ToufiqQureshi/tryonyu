@@ -82,3 +82,12 @@ don't rewrite old entries, don't skip adding one.
     "read only the last 3 entries by default" and "append a new entry
     after every real exchange" so any AI agent picks this up correctly
     without reading the whole growing file.
+
+12. Founder marked PR #1 ready for review (out of draft). Verified the
+    previously-unverified code: `go build ./...` in `go-api` compiles
+    clean, `python3 -m py_compile` passes on all `python-cv/*.py` files.
+    Updated the PR description (was stale — still said "docs-only
+    change" from the first commit, but the PR now has 23 files/~1900
+    lines including all the restored + new code). CodeRabbit review is
+    queued (was skipped while draft). Not yet done: an actual `docker
+    compose up` end-to-end smoke test.

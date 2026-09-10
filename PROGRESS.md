@@ -62,9 +62,14 @@ What's NOT real yet (the one deliberate gap):
 Commits: `81430dc` (restore), `fde5920` (clothing pipeline). PR #1
 (same as above) has both.
 
-**Not yet verified**: `go build ./...` on `go-api` has not been run in
-this session to confirm the Go changes actually compile — do that
-before treating this as done.
+## 2026-09-10 — PR #1 marked ready for review, build verified
+
+- Founder took PR #1 out of draft.
+- `go build ./...` (go-api) and `python3 -m py_compile` (all python-cv
+  files) both run clean — the earlier "not yet verified" gap is closed.
+- PR description updated (was stale, said "docs-only change" from the
+  first commit despite now having 23 files / ~1900 lines).
+- Still not done: an actual `docker compose up` end-to-end smoke test.
 
 ## Next up
 
